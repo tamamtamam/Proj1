@@ -30,4 +30,8 @@ public class MessageController {
         return stream.observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread());
     }
+
+    void delete() {
+        storageDataSource.save(0);
+    }
 }

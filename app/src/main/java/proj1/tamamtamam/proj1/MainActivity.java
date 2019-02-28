@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
     }
 
     private void showList(int lastNumber) {
-        clear();
+        linearLayout.removeAllViews();
         for (int i = 1; i <= lastNumber; i++) {
             TextView tempView = new TextView(this);
             tempView.setText(String.valueOf(i));
@@ -64,5 +64,6 @@ public class MainActivity extends Activity {
 
     private void clear() {
         linearLayout.removeAllViews();
+        messageController.delete();
     }
 }
