@@ -28,7 +28,7 @@ public class MessageController {
                             }));
 
         return stream.observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     void delete() {

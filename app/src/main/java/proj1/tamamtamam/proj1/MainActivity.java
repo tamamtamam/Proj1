@@ -36,6 +36,13 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        refresh();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
