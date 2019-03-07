@@ -15,12 +15,22 @@ class StorageDataSource {
                 Context.MODE_PRIVATE);
     }
 
-    Single<Integer> load() {
-        Integer savedNumber = sharedPreferences.getInt("integer", 0);
-        return Single.just(savedNumber);
+    Single<Integer> load(int lastShowedNumber) {
+        int returnNumber;
+        if (lastShowedNumber == -1)
+            returnNumber = sharedPreferences.getInt("integer", 0);
+        else {
+            int storedNumber = sharedPreferences.getInt("integer", 0);
+            if (lastShowedNumber + 10 <= storedNumber)
+                returnNumber = lastShowedNumber + 10;
+            else
+                returnNumber = storedNumber;
+        }
+        return Single.just(returnNumber);
     }
 
     void save(int lastNumber) {
-        sharedPreferences.edit().putInt("integer", lastNumber).apply();
+        int storedNumber = sharedPreferences.getInt("integer", 0);
+        sharedPreferences.edit().putInt("integer", Math.max(storedNumber, lastNumber)).apply();
     }
 }

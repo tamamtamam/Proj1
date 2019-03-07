@@ -10,6 +10,7 @@ public class MessageController {
 
     private StorageDataSource storageDataSource;
     private NetworkDataSource networkDataSource;
+    private int lastShowedNumber = 0;
 
     MessageController(Context context) {
         networkDataSource = new NetworkDataSource(context);
@@ -19,19 +20,17 @@ public class MessageController {
     Single<Integer> fetch(boolean fromCache) {
         Single<Integer> stream;
         if (fromCache)
-            stream = storageDataSource.load();
+            stream = storageDataSource.load(lastShowedNumber);
         else
-            stream = storageDataSource.load()
-                    .flatMap(integer -> networkDataSource.load(integer)
-                            .doOnSuccess(integer1 -> {
-                                storageDataSource.save(integer1);
-                            }));
+            stream = networkDataSource.load(lastShowedNumber)
+                    .doOnSuccess(integer -> storageDataSource.save(integer));
 
-        return stream.observeOn(AndroidSchedulers.mainThread())
+        return stream.doOnSuccess(integer -> lastShowedNumber = integer)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
     }
 
-    void delete() {
-        storageDataSource.save(0);
+    void clear() {
+        lastShowedNumber = 0;
     }
 }
